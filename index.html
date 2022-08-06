@@ -7,7 +7,8 @@
       href="./node_modules/ant-design-vue/dist/antd.css"
     />
     <script src="./node_modules/vue/dist/vue.runtime.global.prod.js"></script>
-   <script src="./node_modules/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
+    <script src="./node_modules/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
+    <!-- <script src="./node_modules/dayjs/dayjs.min.js"></script> -->
 
     <script>
         const options = {
@@ -15,7 +16,7 @@
         vue: Vue
       },
       pathResolve({ refPath, relPath }) { 
-        console.log('refPath, relPath: ', refPath, relPath);
+        // console.log('in refPath, relPath: ', refPath, relPath);
         
         if ( relPath === '.' ) // self
         return refPath;
@@ -24,7 +25,13 @@
         if ( relPath[0] !== '.' && relPath[0] !== '/' ){
           refPath='/node_modules/'
         }
-          
+        if ( relPath=='dayjs' ){
+          // refPath='./node_modules/'
+          return '/node_modules/dayjs/dayjs.min.js'
+        }
+        if(relPath=="vue"){
+          return '/node_modules/vue/dist/vue.runtime.global.prod.js'
+        }
         // if(refPath&& refPath.indexOf("/node_modules/")!=-1){
         //     if(relPath.indexOf('./')!=-1){
         //         relPath= relPath.substring(1);
@@ -39,6 +46,8 @@
         //     实际这个路径应该进一步加载  button_group.js  或者 button_group/index.js
         //     或许修改服务端默认文件的方式可以解决 xxx/button_group/index.js 这个问题
         //     但是 xxx/button_group 这种就无法识别为 button_group.js
+        console.log('out refPath, relPath: ', refPath, relPath);
+
         return String(new URL(relPath, refPath === undefined ? window.location : refPath));
     },
       getFile: async (url) => {
@@ -59,6 +68,7 @@ var urlObj
               </template>
               <script>
                 import Button  from './node_modules/ant-design-vue/dist/antd.js'
+                import  './node_modules/dayjs/dayjs.min.js'
 
                 export default {
                   components: {
