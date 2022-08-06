@@ -1,0 +1,104 @@
+<html>
+  <body>
+    <div id="app"></div>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <link
+      rel="stylesheet"
+      href="./node_modules/ant-design-vue/dist/antd.css"
+    />
+    <script src="./node_modules/vue/dist/vue.runtime.global.prod.js"></script>
+   <script src="./node_modules/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
+
+    <script>
+        const options = {
+      moduleCache: {
+        vue: Vue
+      },
+      pathResolve({ refPath, relPath }) { 
+        console.log('refPath, relPath: ', refPath, relPath);
+        
+        if ( relPath === '.' ) // self
+        return refPath;
+
+        // relPath is a module name ?
+        if ( relPath[0] !== '.' && relPath[0] !== '/' ){
+          refPath='/node_modules/'
+        }
+          
+        // if(refPath&& refPath.indexOf("/node_modules/")!=-1){
+        //     if(relPath.indexOf('./')!=-1){
+        //         relPath= relPath.substring(1);
+        //     }
+        //     return './node_modules/'+relPath;
+        // }
+        if(!relPath.endsWith(".vue") && !relPath.endsWith('.js')){
+            relPath=relPath+".js";
+        }
+        // 1. 注意控制台日志，此处是根据 refPath 来加载relPath 
+        // 2. 但是这里可能会出现 类似于 http://localhost:5000/node_modules/ant-design-vue/dist/button/button_group 这样的路径
+        //     实际这个路径应该进一步加载  button_group.js  或者 button_group/index.js
+        //     或许修改服务端默认文件的方式可以解决 xxx/button_group/index.js 这个问题
+        //     但是 xxx/button_group 这种就无法识别为 button_group.js
+        return String(new URL(relPath, refPath === undefined ? window.location : refPath));
+    },
+      getFile: async (url) => {
+        console.log('url: ', url);
+var urlObj
+        // note: here, for convinience, we just returns a content from a 
+        try{
+            urlObj= new URL(url);
+        }catch{}
+        if ( urlObj&&urlObj.pathname === '/main.vue' ) {
+
+          return {
+            getContentData: () => /*<!--*/`
+              <template>
+                <div>
+                  <Button >add</Button>
+                </div>
+              </template>
+              <script>
+                import Button  from './node_modules/ant-design-vue/dist/antd.js'
+
+                export default {
+                  components: {
+                    Button,
+                  },
+                  data: {
+                    selection: { start: Date.now(), end: Date.now() },
+                    calendarEvents: []
+                  },
+                  methods: {
+                    add: function() {
+                      this.calendarEvents.push({
+                        color: '#'+Math.floor(Math.random()*16777215).toString(16),
+                        start: this.selection.start,
+                        end: this.selection.end
+                      });
+                    }
+                  }
+                }
+              </script>
+            `/* --> */,
+            type: '.vue',
+          }
+        }
+
+        return fetch(url).then(res => res.text());
+      },
+      addStyle(textContent) {
+
+        const style = Object.assign(document.createElement('style'), { textContent });
+        const ref = document.head.getElementsByTagName('style')[0] || null;
+        document.head.insertBefore(style, ref);
+      },
+    }
+
+
+    const { loadModule } = window['vue3-sfc-loader'];
+
+        Vue.createApp(Vue.defineAsyncComponent(() => window['vue3-sfc-loader'].loadModule('/main.vue', options))).mount("#app");
+
+    </script>
+  </body>
+</html>
