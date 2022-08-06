@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet"
+        type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+
+</head>
+
+<body>
+    <div id="root">
+        <a-cascader :options="options" :default-value="['zhejiang', 'hangzhou', 'xihu']" @change="onChange" />
+    </div>
+
+    <script>
+
+        var vue = new Vue({
+            el: '#root',
+            data() {
+                return {
+                    options: [
+                        {
+                            value: 'zhejiang',
+                            label: 'Zhejiang',
+                            children: [
+                                {
+                                    value: 'hangzhou',
+                                    label: 'Hangzhou',
+                                    children: [
+                                        {
+                                            value: 'xihu',
+                                            label: 'West Lake',
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            value: 'jiangsu',
+                            label: 'Jiangsu',
+                            children: [
+                                {
+                                    value: 'nanjing',
+                                    label: 'Nanjing',
+                                    children: [
+                                        {
+                                            value: 'zhonghuamen',
+                                            label: 'Zhong Hua Men',
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                };
+            },
+            methods: {
+                onChange(value) {
+                    console.log(value);
+                },
+            },
+        })
+
+    </script>
+</body>
+
+</html>
